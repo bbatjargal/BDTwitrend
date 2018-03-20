@@ -1,6 +1,5 @@
 package edu.mum.bdt.java;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
@@ -11,10 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 
-import twitter4j.FilterQuery;
 import twitter4j.HashtagEntity;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -25,36 +21,37 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 /** 
- * Arguments: <comsumerKey> <consumerSecret> <accessToken> <accessTokenSecret> <topic-name>
+ * Arguments: <comsumerKey> <consumerSecret> <accessToken> <accessTokenSecret> <topic-name> <brokers>
  * <comsumerKey>	- Twitter consumer key 
  * <consumerSecret>  	- Twitter consumer secret
  * <accessToken>	- Twitter access token
  * <accessTokenSecret>	- Twitter access token secret
  * <topic-name>		- The kafka topic to subscribe to
+ * <brokers>		- Brokers
  */
 
 public class BDTwitrendProducer {
+	@SuppressWarnings({ "resource" })
 	public static void main(String[] args) throws Exception {
 		final LinkedBlockingQueue<Status> queue = new LinkedBlockingQueue<Status>(1000);
 
-		if (args.length < 4) {
+		if (args.length < 5) {
 			System.out.println(
-					"Usage: BDTwitrendProducer <twitter-consumer-key> <twitter-consumer-secret> <twitter-access-token> <twitter-access-token-secret> <topic-name>");
+					"Usage: BDTwitrendProducer <twitter-consumer-key> <twitter-consumer-secret> <twitter-access-token> <twitter-access-token-secret> <topic-name> <brokers>");
 			return;
 		}
 		//Logger rootLogger = Logger.getRootLogger();
 		//rootLogger.setLevel(Level.ERROR);
-
-//Logger.getLogger("org").setLevel(Level.OFF);
-//Logger.getLogger("akka").setLevel(Level.OFF);
 
 		String consumerKey = args[0].toString();
 		String consumerSecret = args[1].toString();
 		String accessToken = args[2].toString();
 		String accessTokenSecret = args[3].toString();
 		String topicName = args[4].toString();
+		String brokers = args[5].toString();
+		
 		//String[] arguments = args.clone();
-		//String[] keyWords = Arrays.copyOfRange(arguments, 5, arguments.length);
+		//String[] keyWords = Arrays.copyOfRange(arguments, 6, arguments.length);
 
 		// Set twitter oAuth tokens in the configuration
 		ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -94,18 +91,17 @@ public class BDTwitrendProducer {
 		twitterStream.addListener(listener);
 
 		// Filter keywords
-		//FilterQuery query = new FilterQuery().track(new String[] {""});
-		//twitterStream.filter(query);
+		// FilterQuery query = new FilterQuery().track(new String[] {""});
+		// twitterStream.filter(query);
 		
+		//filter by language 
 		twitterStream.sample("en");
 
 		// Thread.sleep(5000);
-
-		// Add Kafka producer config settings
-		
+		// Add Kafka producer config settings		
 		Properties props = new Properties();
-		props.put("metadata.broker.list", "localhost:9092");
-		props.put("bootstrap.servers", "localhost:9092");
+		props.put("metadata.broker.list", brokers);
+		props.put("bootstrap.servers", brokers);
 		props.put("acks", "all");
 		props.put("retries", 0);
 		props.put("batch.size", 16384);
@@ -117,8 +113,7 @@ public class BDTwitrendProducer {
 
 		Producer<String, String> producer = new KafkaProducer<String, String>(props);
 
-		// poll for new tweets in the queue. If new tweets are added, send them
-		// to the topic
+		// poll for new tweets in the queue. If new tweets are added, send them to the topic
 		StringBuilder sb;
 		String delimiter = "º¿";
 		
@@ -131,7 +126,6 @@ public class BDTwitrendProducer {
 			
 			sb = new StringBuilder();			
 			
-			//ret.
 			if (ret == null) {
 				Thread.sleep(100);
 				// i++;
@@ -157,13 +151,10 @@ public class BDTwitrendProducer {
 					sb.append("").append(delimiter).append(delimiter);
 					sb.append("").append(delimiter).append(delimiter);
 				}
-				sb.append("").append(outFormat.format(new Date()));
-				
+				sb.append("").append(outFormat.format(new Date()));				
 
 				System.out.println("Data: " + sb.toString());
 				producer.send(new ProducerRecord<String, String>(topicName, UUID.randomUUID().toString(), sb.toString() ));
-				
-				//new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())
 			}
 		}
 		// producer.close();

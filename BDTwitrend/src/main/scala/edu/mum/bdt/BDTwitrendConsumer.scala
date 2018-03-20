@@ -27,41 +27,28 @@ import org.apache.hadoop.hbase.{ HBaseConfiguration, HTableDescriptor, HColumnDe
 object BDTwitrendConsumer {
   def main(args: Array[String]) = {
 
-    if (args.length != 2) {
+    if (args.length != 3) {
       System.err.println(s"""
-        |Usage: BDTwitrendConsumer <brokers> <topics>
+        |Usage: BDTwitrendConsumer <brokers> <topics> <checkpoint-address>
         |  <brokers> is a list of one or more Kafka brokers
         |  <topics> is a list of one or more kafka topics to consume from
+        |  <checkpoint-address> is a check point directory for performing stateful operations
         |
         """.stripMargin)
       System.exit(1)
     }
     
         
-    val Array(brokers, topics) = args
+    val Array(brokers, topics, checkpoint_address) = args
     
-    // Create context with 2 second batch interval
+    // Create context with 6 second batch interval
     val sparkConf = new SparkConf().setAppName("DirectKafkaWordCount").setMaster("local[2]").set("spark.executor.memory","1g");
     val ssc = new StreamingContext(sparkConf, Seconds(6))
     
     //val sc = ssc.sparkContext
     //sc.setLogLevel("ERROR")
-
-    //For hbase
-    //val sc = new SparkContext(sparkConf)
     
     try{
-      /*val spark = SparkSession
-                    .builder()
-                    .appName("Spark SQL basic example")
-                    .config("spark.some.config.option", "some-value")
-                    .getOrCreate()
-                    
-      import spark.implicits._ */
-
-      
-      //var hashTagCounts = loadHashTagFromHBase(spark)
-
       // Create direct kafka stream with brokers and topics
       val topicsSet = topics.split(",").toSet
       
@@ -69,14 +56,6 @@ object BDTwitrendConsumer {
       
       val messages = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](
         ssc, kafkaParams, topicsSet)
-  
-      // Get the lines, split them into words, count the words and print
-      //val words = messages.map(_._2).flatMap(_.split(" "))
-      //val wordCounts = messages.map(x => (x, 1)).reduceByKey(_ + _)
-      
-      //wordCounts.print()
-  
-      //hashTagCounts.
       
       //HBASE
       val updateFunc = (values: Seq[Int], state: Option[Int]) => { 
@@ -85,15 +64,9 @@ object BDTwitrendConsumer {
         val updatedSum = currentCount+previousCount         
         Some(updatedSum)       
       }
-      
-      
-      val columnFamily = "Word"
     
-      //Defining a check point directory for performing stateful operations
- 
-      ssc.checkpoint("hdfs://localhost:9000/WordCount_checkpoint") 
-      //val cnt = wordCounts.updateStateByKey(updateFunc)  //.map(x => (x, 1)).reduceByKey(_ + _)
-
+      //Defining a check point directory for performing stateful operations 
+      ssc.checkpoint(checkpoint_address) 
 
       val Hbase_inset = messages.foreachRDD(rdd => if (!rdd.isEmpty()) rdd.foreach(toHBase(_)))
       
@@ -113,12 +86,8 @@ object BDTwitrendConsumer {
 
     val delimiter= "º¿"
     val hConf = new HBaseConfiguration() 
-    //hConf.set("hbase.zookeeper.quorum", "localhost:2181") 
     val hTable = new HTable(hConf, "tblTweet") 
     
-    //hTable.getScanner(x$1)
-    //val tableDescription = new HTableDescriptor(tableName) 
-    //tableDescription.addFamily(new HColumnDescriptor("Details".getBytes()))
      
     val data = row._2.toString()
     val datas = data.split(delimiter)
@@ -160,60 +129,3 @@ object BDTwitrendConsumer {
   }
   
 }
-
-/*
- * 
- * 
-  
-  def loadHashTagFromHBase(sqlContext: SparkSession) : DataFrame = {
-
-    def catalog = s"""{
-      |"table":{"namespace":"default", "name":"tblTweetHashTag"},
-      |"rowkey":"key",
-      |"columns":{
-        |"col0":{"cf":"rowkey", "col":"key", "type":"string"},
-        |"col1":{"cf":"HashTagCount", "col":"HashTag", "type":"string"},
-        |"col2":{"cf":"HashTagCount", "col":"Count", "type":"string"}
-      |}
-    |}""".stripMargin
-    
-    def withCatalog(cat: String): DataFrame = {
-      sqlContext
-      .read
-      .options(Map(HBaseTableCatalog.tableCatalog->cat))
-      .format("org.apache.spark.sql.execution.datasources.hbase")
-      .load()
-    }
-    
-    val df = withCatalog(catalog)
-    //val s = df.select("col1", "col2")
-    df.registerTempTable("tblTweetHashTag")
-    //return 
-    return sqlContext.sql("select col0, col2 from tblTweetHashTag") //.show
-    //return s
-    
-  }
-     val Array(input, output) = args
-    
-    //Start the Spark context
-    val conf = new SparkConf()
-      .setAppName("WordCount")
-      .setMaster("local")
-    val sc = new SparkContext(conf)
-
-    //Read some example file to a test RDD
-    val test = sc.textFile(input)
-
-    test.flatMap { line => //for each line
-      line.split(" ") //split the line in word by word.
-    }
-      .map { word => //for each word
-        (word, 1) //Return a key/value tuple, with the word as key and 1 as value
-      }
-      .reduceByKey(_ + _) //Sum all of the value with same key
-      .saveAsTextFile(output) //Save to a text file
-
-    //Stop the Spark context
-    sc.stop
-  
- * */
