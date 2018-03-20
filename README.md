@@ -101,8 +101,13 @@ In order to run, we have to add the following Interpreters.
 
 ### Get data
 
-Run a Kafka producer using 8.BDTwitrendProducer.sh script in Commands directory:
+Run a Kafka producer using 8.BDTwitrendProducer.sh script in Commands directory. First, we need define twitter consumer key, secret, access token and access token secret. Read more information from http://docs.inboundnow.com/guide/create-twitter-application/.
+
 ```
+$ spark-submit --class "edu.mum.bdt.java.BDTwitrendProducer" --master local[2] BDTwitrendProducer.jar <twitter-consumer-key> <twitter-consumer-secret> <twitter-access-token> <twitter-access-token-secret>  topic-bdtwitrend
+
+or simply edit "8.BDTwitrendProducer.sh" bash file and run.
+
 $ ./"8.BDTwitrendProducer.sh"
 
 BDTwitrendProducer.jar is required in a directory where the base runs
