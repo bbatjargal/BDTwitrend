@@ -2,7 +2,18 @@
 The class project of Big Data Technology (CS523) course in March 2018 at MUM.
 
 ## Describe
-Reading stream data from Twitter and saving it to HBase database using Kafka and Spark Stream. Reading from HBase database using Spark, proceed some simple analysis using SparkSQL. Finally, illustrating charts and showing simple a Real-Time dashboard.
+
+```
+Project Parts Statements
+Part 1. Create your own project for Spark Streaming.
+Part 2. Create your own project using Spark SQL and Hbase/Hive together.
+Part 3. In any of the parts 1 and 2 above, show the proper use of any of the data visualization tools like Tableau, Jupyter, Plotly, etc.
+Part 4. Do some research and create a simple demo project for any one of the following tools: Presto, Impala, Phoenix, Storm, Kafka
+```
+
+I try to combine all parts into a single project. My idea is that find out trending hash tags from Twitter data.
+
+Main operations are that reading stream data from Twitter and saving it to HBase database using Kafka and Spark Stream.  Reading from HBase database using Spark, proceed some simple analysis using SparkSQL. Finally, illustrating regular charts and showing real time charts in a dashboard.
 
 ## Environment
 
