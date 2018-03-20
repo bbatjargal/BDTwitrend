@@ -98,7 +98,7 @@ In order to run, we have to add the following Interpreters.
   - /usr/local/thirdpartylibs/lift-json_2.11-2.6.3.jar
 ```
 
-### Get the data
+### Get data
 
 Run a Kafka producer using 8.BDTwitrendProducer.sh script in Commands directory:
 ```
@@ -108,9 +108,11 @@ BDTwitrendProducer.jar is required in a directory where the base runs
 ```
 This script will use twitter streaming API to get real-time tweets. It will feed the tweets into Kafka consumers.
 
-### The main Consumer programs
 
-- Saving the tweet into HBase database
+### The main consumer
+
+Saving the tweet into HBase database
+
 ```
 $  ./"9.BDTwitrendConsumer.sh"
 
@@ -120,7 +122,7 @@ BDTwitrendConsumer.jar is required in a directory where the base runs
 When it's running, it gets data from a Kafka producer and parse and save date into HBase database.
 
 
-#### Visualization
+### Visualization
 
 I use Apache Zeppelin notebook to visualize the data. There are two parts: Real time and regular charts which we have to run manually
 
@@ -131,6 +133,7 @@ At first, a section named "4. Load data into table (Spark/HBase/DataFrames)" is 
 - Real time charts
 
 At first, a section named "2. Kafka Consumer for real-time dashboard" is needed to run. After finished, run a section named "1. Real-Time Dashboard". Then you can see some real time charts such as "Number of Tweets by received date", "Number of Tweets/Users" and "Latest 10 tweets".
+
 
 ### Verify data
 Using hbase-shell, we can see where data stored. Here are some commands we can use.
