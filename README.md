@@ -42,29 +42,47 @@ Firstly, you need to be sure all the components are correctly installed and star
 See more from Commands directory
 
 ### Preparation
-You need export Scala and Java projects as a jar file using maven. Also, import a Zeppelin json file into your Zeppelin Notebook.
+You need export Scala and Java projects as a jar file using maven. Also, creating datatables and importing a Zeppelin json file into your Zeppelin Notebook.
 
 - Export Projects as jars
 ```
-$ cd BDTwitrend
+$ cd BDTwitrend/
 $ mvn clean install
 
 rename your jar file to BDTwitrendConsumer.jar
 ```
 
 ```
-$ cd BDTwitrendProducer
+$ cd BDTwitrendProducer/
 $ mvn clean install
 
 rename your jar file to BDTwitrendProducer.jar
 ```
 
+- Create datatables on HBase database
+
+There are two table 'tblTweet' and 'tblHashTag'.
+
+```
+$ hbase-shell
+hbase> create 'tblTweet', 'Tweet', 'Geo'
+hbase> create 'tblHashTag', 'Info'
+
+```
+
+
 - Import a json file from ApacheZeppelin directory into your Zeppelin Notebook
-In order to run we have to add the following Interpreters
+
+In order to run, we have to add the following Interpreters.
+
 ```
 - md
 - Angular
-- HBase
+- HBase with the following dependencies:
+  - /usr/local/hbase/lib/hbase-client-1.2.6.jar 	
+  - /usr/local/hbase/lib/hbase-protocol-1.2.6.jar 	
+  - /usr/local/hbase/lib/hbase-common-1.2.6.jar
+
 - spark with the following dependencies:
   - /usr/local/hbase/lib/hbase-client-1.2.6.jar 	
   - /usr/local/hbase/lib/hbase-common-1.2.6.jar 	
@@ -79,24 +97,6 @@ In order to run we have to add the following Interpreters
   - /usr/local/thirdpartylibs/spark-highcharts-0.6.5.jar 	
   - /usr/local/thirdpartylibs/lift-json_2.11-2.6.3.jar
 ```
-
-zeppelin
-hbase dependencies
-/usr/local/hbase/lib/hbase-client-1.2.6.jar
-/usr/local/hbase/lib/hbase-protocol-1.2.6.jar
-/usr/local/hbase/lib/hbase-common-1.2.6.jar
-
-spark dependencies
-
-/usr/local/hbase/lib/hbase-client-1.2.6.jar
-/usr/local/hbase/lib/hbase-common-1.2.6.jar
-/usr/local/hbase/lib/hbase-protocol-1.2.6.jar
-/usr/local/hbase/lib/hbase-server-1.2.6.jar
-/usr/local/hbase/lib/metrics-core-2.2.0.jar
-/usr/local/hbase/lib/shc-core-1.1.2-2.2-s_2.11-SNAPSHOT.jar
-org.apache.spark:spark-streaming-kafka-0-10_2.11:2.1.0
-org.apache.kafka:kafka-clients:0.10.1.1
-org.apache.kafka:kafka_2.11:0.10.1.1  
 
 ### Get the data
 
@@ -120,12 +120,31 @@ BDTwitrendConsumer.jar is required in a directory where the base runs
 When it's running, it gets data from a Kafka producer and parse and save date into HBase database.
 
 
-#### Vizualization Results
+#### Visualization
 
 I use Apache Zeppelin notebook to visualize the data. There are two parts: Real time and regular charts which we have to run manually
 
 - Regular charts
 
-At first, When it's running, it gets data from a Kafka producer and parse and save date into HBase database.
+At first, a section named "4. Load data into table (Spark/HBase/DataFrames)" is needed to run. After finished, feel free to run sections which are below "4. Load data into table (Spark/HBase/DataFrames)", such as "Number of Tweets and Users", "Top 10 topics", "Most active 10 users" etc.
 
 - Real time charts
+
+At first, a section named "2. Kafka Consumer for real-time dashboard" is needed to run. After finished, run a section named "1. Real-Time Dashboard". Then you can see some real time charts such as "Number of Tweets by received date", "Number of Tweets/Users" and "Latest 10 tweets".
+
+### Verify data
+Using hbase-shell, we can see where data stored. Here are some commands we can use.
+
+```
+hbase> list
+hbase> scan 'tblTweet', { LIMIT => 10 }
+hbase> count 'tblTweet'
+
+```
+
+```
+hbase> list
+hbase> scan 'tblHashTag', { LIMIT => 10 }
+hbase> count 'tblHashTag'
+
+```
