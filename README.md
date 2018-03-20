@@ -28,6 +28,7 @@ All the development work is done on Ubuntu 17.10. I use Hadoop, YARN, Zookeeper,
 - D3JS - v3
 - Zeppelin - 0.7.3
 - Hortonworks-SHC 1.1.2-2.2-s_2.11-SNAPSHOT
+- ScalaIDE - 4.7.0
 
 ## How it works
 Firstly, you need to be sure all the components are correctly installed and started.
