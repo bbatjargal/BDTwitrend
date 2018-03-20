@@ -26,6 +26,8 @@ All the development work is done on Ubuntu 17.10. I use Hadoop, YARN, Zookeeper,
 - https://spark.apache.org/downloads.html
 - http://zeppelin.apache.org/docs/0.7.3/install/install.html
 - https://bl.ocks.org/mbostock/3883245
+- http://twitter4j.org/
+- http://www.scala-lang.org/
 
 ### Requirments
 - Ubuntu 17.10
