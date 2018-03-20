@@ -62,22 +62,22 @@ rename your jar file to BDTwitrendProducer.jar
 - Import a json file from ApacheZeppelin directory into your Zeppelin Notebook
 In order to run we have to add the following Interpreters
 ```
---- md
---- Angular
---- HBase
---- spark with the following dependencies:
----- /usr/local/hbase/lib/hbase-client-1.2.6.jar 	
----- /usr/local/hbase/lib/hbase-common-1.2.6.jar 	
----- /usr/local/hbase/lib/hbase-protocol-1.2.6.jar 	
----- /usr/local/hbase/lib/hbase-server-1.2.6.jar 	
----- /usr/local/hbase/lib/metrics-core-2.2.0.jar 	
----- /usr/local/hbase/lib/shc-core-1.1.2-2.2-s_2.11-SNAPSHOT.jar 	
----- org.apache.spark:spark-streaming-kafka-0-10_2.11:2.1.0 	
----- org.apache.kafka:kafka-clients:0.10.1.1 	
----- org.apache.kafka:kafka_2.11:0.10.1.1 	
----- org.apache.spark:spark-sql-kafka-0-10_2.11:2.1.0 	
----- /usr/local/thirdpartylibs/spark-highcharts-0.6.5.jar 	
----- /usr/local/thirdpartylibs/lift-json_2.11-2.6.3.jar
+- md
+- Angular
+- HBase
+- spark with the following dependencies:
+  - /usr/local/hbase/lib/hbase-client-1.2.6.jar 	
+  - /usr/local/hbase/lib/hbase-common-1.2.6.jar 	
+  - /usr/local/hbase/lib/hbase-protocol-1.2.6.jar 	
+  - /usr/local/hbase/lib/hbase-server-1.2.6.jar 	
+  - /usr/local/hbase/lib/metrics-core-2.2.0.jar 	
+  - /usr/local/hbase/lib/shc-core-1.1.2-2.2-s_2.11-SNAPSHOT.jar 	
+  - org.apache.spark:spark-streaming-kafka-0-10_2.11:2.1.0 	
+  - org.apache.kafka:kafka-clients:0.10.1.1 	
+  - org.apache.kafka:kafka_2.11:0.10.1.1 	
+  - org.apache.spark:spark-sql-kafka-0-10_2.11:2.1.0 	
+  - /usr/local/thirdpartylibs/spark-highcharts-0.6.5.jar 	
+  - /usr/local/thirdpartylibs/lift-json_2.11-2.6.3.jar
 ```
 
 zeppelin
