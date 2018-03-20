@@ -39,45 +39,93 @@ Firstly, you need to be sure all the components are correctly installed and star
 - Kafka server
 - Zeppelin
 
-See more from Commands folder
+See more from Commands directory
 
 ### Preparation
-You need export Scala and Java projects as a jar using maven. Also, import a Zeppelin json file into your Zeppelin Notebook.
+You need export Scala and Java projects as a jar file using maven. Also, import a Zeppelin json file into your Zeppelin Notebook.
+
+- Export Projects as jars
 ```
 $ cd BDTwitrend
 $ mvn clean install
 
-rename your jar file to BDTwitrendConsumer.fatjar
-'''
+rename your jar file to BDTwitrendConsumer.jar
+```
 
 ```
 $ cd BDTwitrendProducer
 $ mvn clean install
 
-rename your jar file to BDTwitrendProducer.fatjar
-'''
+rename your jar file to BDTwitrendProducer.jar
+```
 
-- Import a json file from ApacheZeppelin folder into your Zeppelin Notebook
- 
+- Import a json file from ApacheZeppelin directory into your Zeppelin Notebook
+In order to run we have to add the following Interpreters
+```
+--- md
+--- Angular
+--- HBase
+--- spark with the following dependencies:
+---- /usr/local/hbase/lib/hbase-client-1.2.6.jar 	
+---- /usr/local/hbase/lib/hbase-common-1.2.6.jar 	
+---- /usr/local/hbase/lib/hbase-protocol-1.2.6.jar 	
+---- /usr/local/hbase/lib/hbase-server-1.2.6.jar 	
+---- /usr/local/hbase/lib/metrics-core-2.2.0.jar 	
+---- /usr/local/hbase/lib/shc-core-1.1.2-2.2-s_2.11-SNAPSHOT.jar 	
+---- org.apache.spark:spark-streaming-kafka-0-10_2.11:2.1.0 	
+---- org.apache.kafka:kafka-clients:0.10.1.1 	
+---- org.apache.kafka:kafka_2.11:0.10.1.1 	
+---- org.apache.spark:spark-sql-kafka-0-10_2.11:2.1.0 	
+---- /usr/local/thirdpartylibs/spark-highcharts-0.6.5.jar 	
+---- /usr/local/thirdpartylibs/lift-json_2.11-2.6.3.jar
+```
+
+zeppelin
+hbase dependencies
+/usr/local/hbase/lib/hbase-client-1.2.6.jar
+/usr/local/hbase/lib/hbase-protocol-1.2.6.jar
+/usr/local/hbase/lib/hbase-common-1.2.6.jar
+
+spark dependencies
+
+/usr/local/hbase/lib/hbase-client-1.2.6.jar
+/usr/local/hbase/lib/hbase-common-1.2.6.jar
+/usr/local/hbase/lib/hbase-protocol-1.2.6.jar
+/usr/local/hbase/lib/hbase-server-1.2.6.jar
+/usr/local/hbase/lib/metrics-core-2.2.0.jar
+/usr/local/hbase/lib/shc-core-1.1.2-2.2-s_2.11-SNAPSHOT.jar
+org.apache.spark:spark-streaming-kafka-0-10_2.11:2.1.0
+org.apache.kafka:kafka-clients:0.10.1.1
+org.apache.kafka:kafka_2.11:0.10.1.1  
 
 ### Get the data
 
-Under the project directory, run the getData.py script:
+Run a Kafka producer using 8.BDTwitrendProducer.sh script in Commands directory:
 ```
-$ python Codes/getData.py
-```
-This script will use twitter real-time streaming API to get real-time tweets, the filter condition is set to "AI". It will proceed the tweets into kafka while writing to a local .json file.
+$ ./"8.BDTwitrendProducer.sh"
 
-If you're offline, you also can use a tweets file to generate data in Kafka. For example, we already have a .json file in Data directory as tweets_AI.json, use the order to push the data to Kafka:
+BDTwitrendProducer.jar is required in a directory where the base runs
 ```
-$ cat Data/tweets_AI.json | $KAFKA_HOME/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic tweets
-```
-### The main programe
-The main program sparkKafka.py need to initialize by spark:
-```
-$  $SPARK_HOME/spark-submit --packages org.apache.spark:spark-streaming-kafka-0–8_2.11:1.6.0 Codes/sparkKafka.py
-```
-When it's running, it gets data from kafka and parse data to count hashtags, you will see some simple result in the terminal window. Since the spark streaming batch interval is set to 10s, the interval analysis result is stored to hive for further analysis. In the mean time, we extract data from hive and proceed further analysis using spark SQL, then visualizing the final result by Plotly. In our main program, the spark SQL will analysis the history data, and update the data visualization every 10s with the latest data.
+This script will use twitter streaming API to get real-time tweets. It will feed the tweets into Kafka consumers.
 
-### Virtualization Results
-DataVirtual\file_analysis_output
+### The main Consumer programs
+
+- Saving the tweet into HBase database
+```
+$  ./"9.BDTwitrendConsumer.sh"
+
+BDTwitrendConsumer.jar is required in a directory where the base runs
+
+```
+When it's running, it gets data from a Kafka producer and parse and save date into HBase database.
+
+
+#### Vizualization Results
+
+I use Apache Zeppelin notebook to visualize the data. There are two parts: Real time and regular charts which we have to run manually
+
+- Regular charts
+
+At first, When it's running, it gets data from a Kafka producer and parse and save date into HBase database.
+
+- Real time charts
