@@ -99,6 +99,20 @@
 			<version>1.6</version>
 			<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>jdk.tools</groupId>
+			<artifactId>jdk.tools</artifactId>
+			<scope>system</scope>
+			<version>1.6</version>
+			<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.hortonworks</groupId>
+			<artifactId>shc-core</artifactId>
+			<scope>system</scope>
+			<version>1.1.2-2.2-s_2.11-SNAPSHOT</version>
+			<systemPath>/usr/local/thirdpartylibs/shc-core-1.1.2-2.2-s_2.11-SNAPSHOT.jar</systemPath>
+		</dependency>
 		
 	</dependencies>
 	<build>

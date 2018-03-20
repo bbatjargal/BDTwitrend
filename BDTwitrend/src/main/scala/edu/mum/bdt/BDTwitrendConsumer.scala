@@ -129,12 +129,14 @@ object BDTwitrendConsumer {
     val longitude = datas(3)
     val createdAt = datas(4)
     val user = datas(5)
+    val receivedAt = datas(6)
 				
     val thePut = new Put(Bytes.toBytes(row._1.toString())) 
     thePut.add(Bytes.toBytes("Tweet"), Bytes.toBytes("Text"), Bytes.toBytes(text)) 
     thePut.add(Bytes.toBytes("Tweet"), Bytes.toBytes("Hastags"), Bytes.toBytes(hastags)) 
     thePut.add(Bytes.toBytes("Tweet"), Bytes.toBytes("Created"), Bytes.toBytes(createdAt)) 
     thePut.add(Bytes.toBytes("Tweet"), Bytes.toBytes("User"), Bytes.toBytes(user)) 
+    thePut.add(Bytes.toBytes("Tweet"), Bytes.toBytes("ReceivedAt"), Bytes.toBytes(receivedAt)) 
     thePut.add(Bytes.toBytes("Geo"), Bytes.toBytes("Latitude"), Bytes.toBytes(latitude)) 
     thePut.add(Bytes.toBytes("Geo"), Bytes.toBytes("Longitude"), Bytes.toBytes(longitude)) 
     
@@ -150,6 +152,7 @@ object BDTwitrendConsumer {
         val putHashTag = new Put(Bytes.toBytes(UUID.randomUUID().toString())) 
         putHashTag.add(Bytes.toBytes("Info"), Bytes.toBytes("HashTag"), Bytes.toBytes(tag)) 
         putHashTag.add(Bytes.toBytes("Info"), Bytes.toBytes("Created"), Bytes.toBytes(createdAt))  
+        putHashTag.add(Bytes.toBytes("Info"), Bytes.toBytes("ReceivedAt"), Bytes.toBytes(receivedAt))  
         tblHashTag.put(putHashTag)      
       }
     }

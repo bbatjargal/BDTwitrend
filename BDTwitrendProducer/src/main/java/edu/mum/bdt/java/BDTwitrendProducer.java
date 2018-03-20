@@ -152,11 +152,12 @@ public class BDTwitrendProducer {
 				}
 				if(ret.getUser() != null) {
 					sb.append(outFormat.format(ret.getUser().getCreatedAt())).append(delimiter);
-					sb.append(ret.getUser().getName());
+					sb.append(ret.getUser().getName()).append(delimiter);
 				}else {
 					sb.append("").append(delimiter).append(delimiter);
-					sb.append("").append(delimiter);
+					sb.append("").append(delimiter).append(delimiter);
 				}
+				sb.append("").append(outFormat.format(new Date()));
 				
 
 				System.out.println("Data: " + sb.toString());
